@@ -84,4 +84,37 @@ function calcSGHole($db, $numShots, $surfaces, $distances) {
 	return $sgTotals;
         //return $sg + calcSG($db, $surfaces[$numShots-1], $distances[$numShots-1], "", 0);
 }
+	
+function addToArray($allSurfaces, $allDistances, $allStrokesGained)
+{
+	
+}
+	
+function insertRound($allSurfaces, $allDistances, $allStrokesGained)
+{
+	$q1 = $db->query("SELECT gid FROM golfer WHERE username = $_SESSION['login'];");
+	$row = $q1->fetch();
+	$gID = $row['gid'];
+	$q2 = $db->query("SELECT MAX(roundID) FROM shotData;");
+	$row = $q2->fetch();
+	$rID = $row['MAX(roundID)'];
+	$roundID += 1;
+	for($i = 0; i<= sizeof($allDistances); $i++)
+	{
+		$surface = $allSurfaces[i];
+		$distance = $allDistances[i];
+		$sg = $allStrokesGained[i];
+		
+		$query = $db->query("INSERT INTO shotData (strokesGained, surface, distance, roundID, golferID)
+		VALUES($sg, $surface, $distance, $roundID, $gID);");
+	}
+}
+
+function getAverageSG($surface, $distance)
+{
+	$q1 = $db->query("SELECT AVG(strokesGained) FROM shotData WHERE surface = $surface AND distance = $distance;");
+	$row = $q1->fetch();
+     	$average = $row['AVG(strokesGained)'];
+	return $average;
+}
 ?>
